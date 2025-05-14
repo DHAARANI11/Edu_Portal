@@ -42,10 +42,10 @@ You can access the system with the following demo accounts:
 
 ```sh
 # Clone the repository
-git clone <YOUR_GIT_URL>
+git clone https://github.com/DHAARANI11/Edu_Portal.git
 
 # Navigate to the project directory
-cd eduportal
+cd Edu_Portal
 
 # Install dependencies
 npm i
