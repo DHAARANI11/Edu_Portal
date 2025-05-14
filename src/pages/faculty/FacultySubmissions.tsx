@@ -1,27 +1,39 @@
-
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card, CardContent, CardDescription, CardHeader, CardTitle
+} from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import {
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow
+} from "@/components/ui/table";
+import {
+  Select, SelectContent, SelectItem, SelectTrigger, SelectValue
+} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import { Search, Filter, FileText, Eye, Download, Check } from 'lucide-react';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Tabs, TabsContent, TabsList, TabsTrigger
+} from "@/components/ui/tabs";
+import {
+  Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogFooter
+} from "@/components/ui/dialog";
 
 export const FacultySubmissions = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const [filterCourse, setFilterCourse] = useState('all');
   const [activeTab, setActiveTab] = useState('pending');
+  const [selectedSubmission, setSelectedSubmission] = useState(null);
   
-  // Sample data
+
   const courses = [
     { id: 'cs101', name: 'Introduction to Computer Science' },
     { id: 'math201', name: 'Calculus I' },
     { id: 'phy105', name: 'Physics for Engineers' },
   ];
-  
-  const submissions = [
+
+
+  const [submissions, setSubmissions] = useState( [
     {
       id: 1,
       studentName: 'Alex Johnson',
@@ -30,7 +42,8 @@ export const FacultySubmissions = () => {
       course: 'cs101',
       submissionDate: '2025-05-08',
       dueDate: '2025-05-10',
-      status: 'pending'
+      status: 'pending',
+      document: 'https://example.com/alex-assignment1.pdf'
     },
     {
       id: 2,
@@ -40,7 +53,8 @@ export const FacultySubmissions = () => {
       course: 'cs101',
       submissionDate: '2025-05-07',
       dueDate: '2025-05-08',
-      status: 'pending'
+      status: 'pending',
+      document: 'https://example.com/maria-assignment2.pdf'
     },
     {
       id: 3,
@@ -50,7 +64,8 @@ export const FacultySubmissions = () => {
       course: 'math201',
       submissionDate: '2025-05-09',
       dueDate: '2025-05-11',
-      status: 'pending'
+      status: 'pending',
+      document: 'https://example.com/john-problemset1.pdf'
     },
     {
       id: 4,
@@ -60,7 +75,8 @@ export const FacultySubmissions = () => {
       course: 'phy105',
       submissionDate: '2025-05-06',
       dueDate: '2025-05-09',
-      status: 'pending'
+      status: 'pending',
+      document: 'https://example.com/emily-labreport.pdf'
     },
     {
       id: 5,
@@ -71,7 +87,8 @@ export const FacultySubmissions = () => {
       submissionDate: '2025-04-20',
       dueDate: '2025-04-22',
       status: 'graded',
-      score: '85/100'
+      score: '85/100',
+      document: 'https://example.com/alex-datastructures.pdf'
     },
     {
       id: 6,
@@ -82,22 +99,32 @@ export const FacultySubmissions = () => {
       submissionDate: '2025-04-15',
       dueDate: '2025-04-18',
       status: 'graded',
-      score: '92/100'
+      score: '92/100',
+      document: 'https://example.com/maria-introprogramming.pdf'
     }
-  ];
+  ]);
 
-  // Filter submissions based on search term, course filter, and active tab
   const filteredSubmissions = submissions.filter(submission => {
     const matchesSearch = submission.studentName.toLowerCase().includes(searchTerm.toLowerCase()) || 
-                         submission.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         submission.studentId.toLowerCase().includes(searchTerm.toLowerCase());
+      submission.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      submission.studentId.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCourse = filterCourse === 'all' || submission.course === filterCourse;
     const matchesStatus = submission.status === activeTab;
-    
     return matchesSearch && matchesCourse && matchesStatus;
   });
 
-  // Get course name by ID
+   const handleMarkAsRead = (submissionId) => {
+    setSubmissions(prev =>
+      prev.map(sub =>
+        sub.id === submissionId ? { ...sub, status: 'graded', score: 'Pending' } : sub
+      )
+    );
+  };
+
+  const handleViewHomework = (submission) => {
+    window.open(submission.homeworkLink, '_blank'); // Opens the homework document in a new tab
+  };
+
   const getCourseName = (courseId) => {
     const course = courses.find(c => c.id === courseId);
     return course ? course.name : courseId;
@@ -106,23 +133,24 @@ export const FacultySubmissions = () => {
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold mb-4">Student Submissions</h1>
-      <p className="text-muted-foreground">Review and grade student homework submissions.</p>
-      
+      <p className="text-muted-foreground">Review and track student homework submissions.</p>
+
       <Card>
         <CardHeader>
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
             <div>
               <CardTitle>Homework Submissions</CardTitle>
-              <CardDescription>Review and grade submissions from your students</CardDescription>
+              <CardDescription>View and manage submissions from your students</CardDescription>
             </div>
             <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full md:w-auto">
               <TabsList>
                 <TabsTrigger value="pending">Pending Review</TabsTrigger>
-                <TabsTrigger value="graded">Graded</TabsTrigger>
+                <TabsTrigger value="graded">Viewed Homeworks</TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
         </CardHeader>
+
         <CardContent>
           <div className="flex flex-col md:flex-row items-center gap-4 mb-6">
             <div className="relative w-full md:w-64">
@@ -149,7 +177,7 @@ export const FacultySubmissions = () => {
               </Select>
             </div>
           </div>
-          
+
           <div className="rounded-md border">
             <Table>
               <TableHeader>
@@ -196,7 +224,7 @@ export const FacultySubmissions = () => {
                       )}
                       <TableCell className="text-right">
                         <div className="flex justify-end gap-2">
-                          <Button variant="outline" size="sm">
+                          <Button variant="outline" size="sm" onClick={() => setSelectedSubmission(submission)}>
                             <Eye className="h-4 w-4 mr-1" />
                             <span>View</span>
                           </Button>
@@ -204,10 +232,10 @@ export const FacultySubmissions = () => {
                             <Download className="h-4 w-4 mr-1" />
                             <span className="sr-only md:not-sr-only md:inline-flex">Download</span>
                           </Button>
-                          {activeTab === 'pending' && (
-                            <Button size="sm">
+                           {activeTab === 'pending' && (
+                            <Button size="sm" variant="default" onClick={() => handleMarkAsRead(submission.id)}>
                               <Check className="h-4 w-4 mr-1" />
-                              <span className="sr-only md:not-sr-only md:inline-flex">Grade</span>
+                              <span className="sr-only md:not-sr-only md:inline-flex">Mark as Read</span>
                             </Button>
                           )}
                         </div>
@@ -226,6 +254,34 @@ export const FacultySubmissions = () => {
           </div>
         </CardContent>
       </Card>
+
+      {/* Homework Modal */}
+      {selectedSubmission && (
+        <Dialog open={!!selectedSubmission} onOpenChange={() => setSelectedSubmission(null)}>
+          <DialogContent className="max-w-2xl">
+            <DialogHeader>
+              <DialogTitle>{selectedSubmission.title}</DialogTitle>
+              <DialogDescription>
+                <p><strong>Student:</strong> {selectedSubmission.studentName} ({selectedSubmission.studentId})</p>
+                <p><strong>Subject:</strong> {getCourseName(selectedSubmission.course)}</p>
+                <p><strong>Submitted On:</strong> {new Date(selectedSubmission.submissionDate).toLocaleDateString()}</p>
+              </DialogDescription>
+            </DialogHeader>
+            <div className="mt-4">
+              <iframe
+                src={selectedSubmission.document}
+                title="Homework Document"
+                width="100%"
+                height="400px"
+                className="rounded-md border"
+              ></iframe>
+            </div>
+            <DialogFooter>
+              <Button onClick={() => setSelectedSubmission(null)}>Close</Button>
+            </DialogFooter>
+          </DialogContent>
+        </Dialog>
+      )}
     </div>
   );
 };

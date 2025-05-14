@@ -59,6 +59,7 @@ import {
   GraduationCap,
   School
 } from "lucide-react";
+import FacultyLeaveRequests from "./pages/faculty/FacultyLeaveRequests";
 
 const queryClient = new QueryClient();
 
@@ -137,6 +138,7 @@ const App = () => {
                   <Route path="/faculty/profile" element={<FacultyProfile />} />
                   <Route path="/faculty/students" element={<StudentProfileView />} />
                   <Route path="/faculty/student/:id" element={<StudentProfileView />} />
+                  <Route path="/faculty/leave-requests" element={<FacultyLeaveRequests />} />
                 </Route>
 
                 {/* Admin Routes */}

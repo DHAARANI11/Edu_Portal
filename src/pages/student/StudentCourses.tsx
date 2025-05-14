@@ -116,7 +116,7 @@ export const StudentCourses = () => {
             
             <DialogFooter>
               <Button variant="outline" onClick={() => setShowCourseDetails(false)}>Close</Button>
-              <Button>Access Course Materials</Button>
+              <Button onClick={() => navigate('/student/materials')}>Access Course Materials</Button>
             </DialogFooter>
           </DialogContent>
         )}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Card, CardContent, CardDescription, CardHeader, CardTitle
 } from "@/components/ui/card";
@@ -11,7 +11,6 @@ import {
 import {
   Avatar, AvatarFallback, AvatarImage
 } from "@/components/ui/avatar";
-import { FileUploadField } from "@/components/forms/FileUploadField";
 import { toast } from "@/hooks/use-toast";
 import { Switch } from "@/components/ui/switch";
 import {
@@ -21,8 +20,9 @@ import {
 export const AdminProfile = () => {
   const [activeTab, setActiveTab] = useState("personal");
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  const admin = {
+  const [admin, setAdmin] = useState({
     id: "ADM12345",
     firstName: "James",
     lastName: "Wilson",
@@ -32,6 +32,7 @@ export const AdminProfile = () => {
     department: "IT Administration",
     joinDate: "2020-03-10",
     officeLocation: "Admin Building, Room 101",
+    profilePicture: "",
     permissions: [
       { name: "User Management", enabled: true },
       { name: "Course Management", enabled: true },
@@ -45,8 +46,47 @@ export const AdminProfile = () => {
       { action: "New course added", timestamp: "2025-05-10T14:15:00Z" },
       { action: "System backup performed", timestamp: "2025-05-09T08:45:00Z" },
       { action: "Faculty record updated", timestamp: "2025-05-08T11:20:00Z" }
-    ],
-    profilePicture: ""
+    ]
+  });
+
+  // Load image from localStorage if exists
+  useEffect(() => {
+    const storedImage = localStorage.getItem("adminProfilePic");
+    if (storedImage) {
+      setAdmin((prev) => ({ ...prev, profilePicture: storedImage }));
+    }
+  }, []);
+
+  const handleProfileImageChange = (file: File | null) => {
+    setProfileImage(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+
+      toast({
+        title: "Profile Picture Selected",
+        description: "Click 'Update Profile Picture' to apply.",
+      });
+    }
+  };
+
+  const handleSaveProfileImage = () => {
+    if (previewUrl) {
+      setAdmin((prev) => ({
+        ...prev,
+        profilePicture: previewUrl,
+      }));
+      localStorage.setItem("adminProfilePic", previewUrl);
+      toast({
+        title: "Profile Picture Updated",
+        description: "Your profile picture has been updated.",
+      });
+      setProfileImage(null);
+      setPreviewUrl(null);
+    }
   };
 
   const handleSavePersonal = () => {
@@ -70,23 +110,13 @@ export const AdminProfile = () => {
     });
   };
 
-  const handleProfileImageChange = (file: File | null) => {
-    setProfileImage(file);
-    if (file) {
-      toast({
-        title: "Profile Picture Selected",
-        description: "Click Save to update your profile picture.",
-      });
-    }
-  };
-
   return (
     <div className="space-y-6">
       <h1 className="text-3xl font-bold">Admin Profile</h1>
       <p className="text-muted-foreground">View and manage your profile information.</p>
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        {/* Left Card: Profile Summary */}
+        {/* Profile Card */}
         <Card className="col-span-1">
           <CardHeader>
             <CardTitle>Profile</CardTitle>
@@ -94,45 +124,40 @@ export const AdminProfile = () => {
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             <Avatar className="h-32 w-32 mb-4">
-              <AvatarImage src={admin.profilePicture || "/placeholder.svg"} alt={admin.firstName} />
-              <AvatarFallback className="text-2xl">{admin.firstName.charAt(0)}{admin.lastName.charAt(0)}</AvatarFallback>
+              <AvatarImage src={previewUrl || admin.profilePicture || "/placeholder.svg"} alt={admin.firstName} />
+              <AvatarFallback className="text-2xl">
+                {admin.firstName.charAt(0)}{admin.lastName.charAt(0)}
+              </AvatarFallback>
             </Avatar>
+
             <h3 className="text-xl font-medium">{admin.firstName} {admin.lastName}</h3>
             <p className="text-sm text-muted-foreground mb-2">{admin.role}</p>
             <p className="text-sm text-muted-foreground mb-4">{admin.department}</p>
 
             <div className="w-full space-y-4 text-sm">
-              <div className="flex items-center">
-                <User className="h-4 w-4 mr-2" /><span>Admin ID: {admin.id}</span>
-              </div>
-              <div className="flex items-center">
-                <Mail className="h-4 w-4 mr-2" /><span>{admin.email}</span>
-              </div>
-              <div className="flex items-center">
-                <Phone className="h-4 w-4 mr-2" /><span>{admin.phone}</span>
-              </div>
-              <div className="flex items-center">
-                <Building className="h-4 w-4 mr-2" /><span>{admin.officeLocation}</span>
-              </div>
-              <div className="flex items-center">
-                <Shield className="h-4 w-4 mr-2" /><span>Admin Access</span>
-              </div>
+              <div className="flex items-center"><User className="h-4 w-4 mr-2" />Admin ID: {admin.id}</div>
+              <div className="flex items-center"><Mail className="h-4 w-4 mr-2" />{admin.email}</div>
+              <div className="flex items-center"><Phone className="h-4 w-4 mr-2" />{admin.phone}</div>
+              <div className="flex items-center"><Building className="h-4 w-4 mr-2" />{admin.officeLocation}</div>
+              <div className="flex items-center"><Shield className="h-4 w-4 mr-2" />Admin Access</div>
             </div>
 
-            <FileUploadField
-              id="profile-image"
-              label="Profile Image"
-              value={profileImage}
-              onChange={handleProfileImageChange}
-              accept="image/*"
-            />
-            <Button className="w-full mt-4" disabled={!profileImage}>
-              Update Profile Picture
-            </Button>
+            <div className="w-full mt-6 space-y-2">
+              <Label htmlFor="profile-image">Choose Profile Picture</Label>
+              <Input
+                id="profile-image"
+                type="file"
+                accept="image/*"
+                onChange={(e) => handleProfileImageChange(e.target.files?.[0] || null)}
+              />
+              <Button className="w-full mt-2" onClick={handleSaveProfileImage} disabled={!previewUrl}>
+                Update Profile Picture
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
-        {/* Right Card: Editable Tabs */}
+        {/* Tabs */}
         <Card className="col-span-1 md:col-span-2">
           <CardHeader>
             <CardTitle>Edit Profile</CardTitle>
@@ -147,7 +172,7 @@ export const AdminProfile = () => {
                 <TabsTrigger value="permissions">Permissions</TabsTrigger>
               </TabsList>
 
-              {/* Personal */}
+              {/* Personal Tab */}
               <TabsContent value="personal" className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-2">
@@ -182,7 +207,7 @@ export const AdminProfile = () => {
                 <Button onClick={handleSavePersonal} className="mt-4">Save Changes</Button>
               </TabsContent>
 
-              {/* Security */}
+              {/* Security Tab */}
               <TabsContent value="security" className="space-y-4">
                 <div className="space-y-2">
                   <Label htmlFor="currentPassword">Current Password</Label>
@@ -207,13 +232,13 @@ export const AdminProfile = () => {
                 <Button onClick={handleSavePassword} className="mt-4">Update Security Settings</Button>
               </TabsContent>
 
-              {/* Activity */}
+              {/* Activity Tab */}
               <TabsContent value="activity" className="space-y-4">
                 <h3 className="text-lg font-medium mb-2">Recent Activity</h3>
                 <div className="space-y-4">
                   {admin.recentActivity.map((activity, index) => (
                     <div key={index} className="flex items-start justify-between p-3 border rounded-md">
-                      <div><p className="font-medium">{activity.action}</p></div>
+                      <p className="font-medium">{activity.action}</p>
                       <div className="flex items-center">
                         <Clock className="h-4 w-4 mr-1 text-muted-foreground" />
                         <span className="text-sm text-muted-foreground">
@@ -226,7 +251,7 @@ export const AdminProfile = () => {
                 <Button variant="outline" className="mt-4">View All Activity</Button>
               </TabsContent>
 
-              {/* Permissions */}
+              {/* Permissions Tab */}
               <TabsContent value="permissions" className="space-y-4">
                 <h3 className="text-lg font-medium mb-2">Access Permissions</h3>
                 <div className="space-y-4">

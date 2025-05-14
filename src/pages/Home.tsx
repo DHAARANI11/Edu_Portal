@@ -42,7 +42,7 @@ export const Home = () => {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="space-y-6 text-center md:text-left">
               <div className="inline-block px-3 py-1 rounded-full bg-primary/10 text-primary text-sm font-medium mb-2">
-                Student Tracking System
+                EduPortal
               </div>
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight">
                 Elevate Educational <span className="text-primary">Excellence</span>

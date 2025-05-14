@@ -20,6 +20,7 @@ import {
 export const StudentProfile = () => {
   const [activeTab, setActiveTab] = useState("personal");
   const [profileImage, setProfileImage] = useState<File | null>(null);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
 
   const student = {
     id: "ST12345",
@@ -55,7 +56,14 @@ export const StudentProfile = () => {
 
   const handleProfileImageChange = (file: File | null) => {
     setProfileImage(file);
+
     if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setImagePreview(reader.result as string);
+      };
+      reader.readAsDataURL(file);
+
       toast({
         title: "Profile Picture Selected",
         description: "Click Save to update your profile picture.",
@@ -77,7 +85,10 @@ export const StudentProfile = () => {
           </CardHeader>
           <CardContent className="flex flex-col items-center">
             <Avatar className="h-32 w-32 mb-4">
-              <AvatarImage src={student.profilePicture || "/placeholder.svg"} alt={student.firstName} />
+              <AvatarImage
+                src={imagePreview || student.profilePicture || "/placeholder.svg"}
+                alt={student.firstName}
+              />
               <AvatarFallback className="text-2xl">
                 {student.firstName.charAt(0)}{student.lastName.charAt(0)}
               </AvatarFallback>

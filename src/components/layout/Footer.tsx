@@ -8,7 +8,7 @@ export const Footer = () => {
       <div className="container mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           <div>
-            <h3 className="font-bold text-lg mb-4">StudentTrack</h3>
+            <h3 className="font-bold text-lg mb-4">EduPortal</h3>
             <p className="text-muted-foreground">
               A comprehensive platform for tracking student progress, managing courses, and facilitating communication between students, faculty, and administrators.
             </p>
@@ -62,7 +62,7 @@ export const Footer = () => {
         </div>
         
         <div className="mt-8 pt-4 border-t text-center text-muted-foreground">
-          <p>&copy; {new Date().getFullYear()} StudentTrack. All rights reserved.</p>
+          <p>&copy; {new Date().getFullYear()} EduPortal. All rights reserved.</p>
         </div>
       </div>
     </footer>

@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -123,9 +122,9 @@ export const StudentProfileView = () => {
     // Apply search filter
     if (searchQuery) {
       result = result.filter(student => 
-        student.firstName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        student.lastName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        student.id.toLowerCase().includes(searchQuery.toLowerCase())
+        student.firstName.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+        student.lastName.toLowerCase().includes(searchQuery.trim().toLowerCase()) ||
+        student.id.toLowerCase().includes(searchQuery.trim().toLowerCase())
       );
     }
     
@@ -155,7 +154,7 @@ export const StudentProfileView = () => {
     });
   };
 
-  const userRole = user?.role || 'faculty';
+  const userRole = user?.role || 'student';  // Default to 'student'
 
   return (
     <div className="space-y-6">
@@ -263,20 +262,18 @@ export const StudentProfileView = () => {
                     </div>
                     <div className="flex justify-between">
                       <span className="text-muted-foreground">Status:</span>
-                      <span className={
-                        student.status === 'Active' ? 'text-green-600' : 
-                        student.status === 'On Leave' ? 'text-yellow-600' : 
-                        'text-red-600'
-                      }>{student.status}</span>
+                      <span className={student.status === 'Active' ? 'text-green-600' : student.status === 'On Leave' ? 'text-yellow-600' : 'text-red-600'}>
+                        {student.status}
+                      </span>
                     </div>
-                    <div className="pt-2 flex space-x-2">
+                    {/* <div className="pt-2 flex space-x-2">
                       <Button asChild className="w-full">
                         <Link to={`/${userRole}/student/${student.id}`}>View Profile</Link>
                       </Button>
                       <Button variant="outline" size="icon" onClick={() => handleContactStudent(student)}>
                         <User className="h-4 w-4" />
                       </Button>
-                    </div>
+                    </div> */}
                   </div>
                 </CardContent>
               </Card>

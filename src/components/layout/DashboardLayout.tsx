@@ -69,7 +69,7 @@ export const DashboardLayout = ({ role, navItems }: DashboardLayoutProps) => {
           <Link to="/" className="text-xl font-bold flex items-center space-x-2">
             <div className="h-8 w-8 rounded-full education-gradient flex items-center justify-center">
             </div>
-            <span>StudentTrack</span>
+            <span>EduPortal</span>
           </Link>
           <Button 
             variant="ghost" 

@@ -48,9 +48,8 @@ export const Navbar = () => {
       <div className="container mx-auto flex justify-between items-center">
         <Link to="/" className="text-2xl font-bold flex items-center space-x-2">
           <div className="h-8 w-8 rounded-full education-gradient flex items-center justify-center">
-            <span className="text-white font-bold">S</span>
           </div>
-          <span className="hidden md:inline">StudentTrack</span>
+          <span className="hidden md:inline">EduPortal</span>
         </Link>
 
         {/* Desktop Navigation */}

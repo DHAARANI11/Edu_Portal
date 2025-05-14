@@ -179,10 +179,10 @@ export const FacultyClasses = () => {
           </div>
           <Dialog open={showAddClassModal} onOpenChange={setShowAddClassModal}>
             <DialogTrigger asChild>
-              <Button>
+              {/* <Button>
                 <PlusCircle className="h-4 w-4 mr-2" />
                 New Class
-              </Button>
+              </Button> */}
             </DialogTrigger>
             <DialogContent className="sm:max-w-[500px]">
               <DialogHeader>
@@ -297,12 +297,12 @@ export const FacultyClasses = () => {
                     <p className="text-xs font-medium">Next Class</p>
                     <p className="text-sm">{classItem.upcoming}</p>
                   </div>
-                  <Button 
+                  {/* <Button 
                     size="sm" 
                     onClick={() => handleStartClass(classItem)}
                   >
                     Start Class
-                  </Button>
+                  </Button> */}
                 </div>
               </div>
             </CardFooter>

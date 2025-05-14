@@ -1,14 +1,20 @@
 import React, { useState } from 'react';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card, CardContent, CardDescription, CardHeader, CardTitle
+} from "@/components/ui/card";
 import { Button } from '@/components/ui/button';
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Textarea } from "@/components/ui/textarea";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { FileUploadField } from "@/components/forms/FileUploadField";
+import {
+  Avatar, AvatarFallback, AvatarImage
+} from "@/components/ui/avatar";
 import { toast } from "@/hooks/use-toast";
-import { User, Mail, Phone, MapPin, Building, GraduationCap, Calendar, Book, Award, BookOpen } from 'lucide-react';
+import {
+  User, Mail, Phone, MapPin, Building, GraduationCap,
+  Calendar, Book, Award, BookOpen
+} from 'lucide-react';
 
 export const FacultyProfile = () => {
   const [activeTab, setActiveTab] = useState("personal");
@@ -42,20 +48,6 @@ export const FacultyProfile = () => {
     profilePicture: ""
   });
 
-  const handleSavePersonal = () => {
-    toast({
-      title: "Profile Updated",
-      description: "Your personal information has been updated successfully.",
-    });
-  };
-
-  const handleSavePassword = () => {
-    toast({
-      title: "Password Updated",
-      description: "Your password has been changed successfully.",
-    });
-  };
-
   const handleProfileImageChange = (file: File | null) => {
     setProfileImage(file);
     if (file) {
@@ -77,8 +69,22 @@ export const FacultyProfile = () => {
         title: "Profile Picture Updated",
         description: "Your profile picture has been updated successfully.",
       });
-      // TODO: You can upload `profileImage` to the backend here
+      // TODO: Upload `profileImage` to the backend or cloud storage here
     }
+  };
+
+  const handleSavePersonal = () => {
+    toast({
+      title: "Profile Updated",
+      description: "Your personal information has been updated successfully.",
+    });
+  };
+
+  const handleSavePassword = () => {
+    toast({
+      title: "Password Updated",
+      description: "Your password has been changed successfully.",
+    });
   };
 
   return (
@@ -106,43 +112,32 @@ export const FacultyProfile = () => {
             <p className="text-sm text-muted-foreground mb-4">{faculty.department} Department</p>
 
             <div className="w-full space-y-4 text-sm">
-              <div className="flex items-center">
-                <User className="h-4 w-4 mr-2" />
-                <span>Faculty ID: {faculty.id}</span>
-              </div>
-              <div className="flex items-center">
-                <Mail className="h-4 w-4 mr-2" />
-                <span>{faculty.email}</span>
-              </div>
-              <div className="flex items-center">
-                <Phone className="h-4 w-4 mr-2" />
-                <span>{faculty.phone}</span>
-              </div>
-              <div className="flex items-center">
-                <Building className="h-4 w-4 mr-2" />
-                <span>{faculty.officeLocation}</span>
-              </div>
-              <div className="flex items-center">
-                <Calendar className="h-4 w-4 mr-2" />
-                <span>Office Hours: {faculty.officeHours}</span>
-              </div>
-              <div className="flex items-center">
-                <Award className="h-4 w-4 mr-2" />
-                <span>Joined: {new Date(faculty.joinDate).toLocaleDateString()}</span>
-              </div>
+              <div className="flex items-center"><User className="h-4 w-4 mr-2" /><span>Faculty ID: {faculty.id}</span></div>
+              <div className="flex items-center"><Mail className="h-4 w-4 mr-2" /><span>{faculty.email}</span></div>
+              <div className="flex items-center"><Phone className="h-4 w-4 mr-2" /><span>{faculty.phone}</span></div>
+              <div className="flex items-center"><Building className="h-4 w-4 mr-2" /><span>{faculty.officeLocation}</span></div>
+              <div className="flex items-center"><Calendar className="h-4 w-4 mr-2" /><span>Office Hours: {faculty.officeHours}</span></div>
+              <div className="flex items-center"><Award className="h-4 w-4 mr-2" /><span>Joined: {new Date(faculty.joinDate).toLocaleDateString()}</span></div>
             </div>
 
-            <FileUploadField
-              id="profile-image"
-              label=""
-              value={profileImage}
-              onChange={handleProfileImageChange}
-              accept="image/*"
-            />
-
-            <Button className="w-full mt-4" disabled={!profileImage} onClick={handleSaveProfileImage}>
-              Update Profile Picture
-            </Button>
+            {/* Gallery Upload */}
+            <div className="w-full mt-4">
+              <Label htmlFor="profile-upload" className="block text-sm font-medium text-muted-foreground mb-2">
+                Upload Profile Picture
+              </Label>
+              <Input
+                id="profile-upload"
+                type="file"
+                accept="image/*"
+                onChange={(e) => {
+                  const file = e.target.files?.[0] || null;
+                  handleProfileImageChange(file);
+                }}
+              />
+              <Button className="w-full mt-4" disabled={!profileImage} onClick={handleSaveProfileImage}>
+                Update Profile Picture
+              </Button>
+            </div>
           </CardContent>
         </Card>
 
@@ -162,72 +157,38 @@ export const FacultyProfile = () => {
               {/* Personal Tab */}
               <TabsContent value="personal" className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="firstName">First Name</Label>
-                    <Input id="firstName" defaultValue={faculty.firstName} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="lastName">Last Name</Label>
-                    <Input id="lastName" defaultValue={faculty.lastName} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="email">Email</Label>
-                    <Input id="email" type="email" defaultValue={faculty.email} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="phone">Phone</Label>
-                    <Input id="phone" defaultValue={faculty.phone} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="department">Department</Label>
-                    <Input id="department" defaultValue={faculty.department} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="designation">Designation</Label>
-                    <Input id="designation" defaultValue={faculty.designation} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="officeLocation">Office Location</Label>
-                    <Input id="officeLocation" defaultValue={faculty.officeLocation} />
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="officeHours">Office Hours</Label>
-                    <Input id="officeHours" defaultValue={faculty.officeHours} />
-                  </div>
+                  {[
+                    ['firstName', 'First Name', faculty.firstName],
+                    ['lastName', 'Last Name', faculty.lastName],
+                    ['email', 'Email', faculty.email],
+                    ['phone', 'Phone', faculty.phone],
+                    ['department', 'Department', faculty.department],
+                    ['designation', 'Designation', faculty.designation],
+                    ['officeLocation', 'Office Location', faculty.officeLocation],
+                    ['officeHours', 'Office Hours', faculty.officeHours]
+                  ].map(([id, label, value]) => (
+                    <div className="space-y-2" key={id}>
+                      <Label htmlFor={id}>{label}</Label>
+                      <Input id={id} defaultValue={value as string} />
+                    </div>
+                  ))}
                 </div>
                 <Button onClick={handleSavePersonal} className="mt-4">Save Changes</Button>
               </TabsContent>
 
               {/* Teaching Tab */}
               <TabsContent value="teaching" className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-medium mb-2">Current Courses</h3>
-                  <div className="space-y-2">
-                    {faculty.coursesTeaching.map((course, index) => (
-                      <div key={index} className="flex items-center p-3 border rounded-md">
-                        <BookOpen className="h-5 w-5 mr-2 text-primary" />
-                        <div>
-                          <p className="font-medium">{course.name}</p>
-                          <p className="text-sm text-muted-foreground">{course.code}</p>
-                        </div>
+                <h3 className="text-lg font-medium mb-2">Current Courses</h3>
+                <div className="space-y-2">
+                  {faculty.coursesTeaching.map((course, index) => (
+                    <div key={index} className="flex items-center p-3 border rounded-md">
+                      <BookOpen className="h-5 w-5 mr-2 text-primary" />
+                      <div>
+                        <p className="font-medium">{course.name}</p>
+                        <p className="text-sm text-muted-foreground">{course.code}</p>
                       </div>
-                    ))}
-                  </div>
-                </div>
-
-                <div>
-                  <h3 className="text-lg font-medium mb-2">Add New Course</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="courseCode">Course Code</Label>
-                      <Input id="courseCode" placeholder="CS101" />
                     </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="courseName">Course Name</Label>
-                      <Input id="courseName" placeholder="Introduction to Computer Science" />
-                    </div>
-                  </div>
-                  <Button className="mt-4">Add Course</Button>
+                  ))}
                 </div>
               </TabsContent>
 
@@ -237,35 +198,29 @@ export const FacultyProfile = () => {
                   <Label htmlFor="researchInterests">Research Interests</Label>
                   <Textarea id="researchInterests" defaultValue={faculty.research} rows={3} />
                 </div>
-
                 <div>
                   <h3 className="text-lg font-medium mb-2">Education</h3>
-                  <div className="space-y-2">
-                    {faculty.education.map((edu, index) => (
-                      <div key={index} className="flex items-center p-3 border rounded-md">
-                        <GraduationCap className="h-5 w-5 mr-2 text-primary" />
-                        <div>
-                          <p className="font-medium">{edu.degree}</p>
-                          <p className="text-sm text-muted-foreground">{edu.institution}, {edu.year}</p>
-                        </div>
+                  {faculty.education.map((edu, index) => (
+                    <div key={index} className="flex items-center p-3 border rounded-md">
+                      <GraduationCap className="h-5 w-5 mr-2 text-primary" />
+                      <div>
+                        <p className="font-medium">{edu.degree}</p>
+                        <p className="text-sm text-muted-foreground">{edu.institution}, {edu.year}</p>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
-
                 <div>
                   <h3 className="text-lg font-medium mb-2">Publications</h3>
-                  <div className="space-y-2">
-                    {faculty.publications.map((pub, index) => (
-                      <div key={index} className="flex items-center p-3 border rounded-md">
-                        <Book className="h-5 w-5 mr-2 text-primary" />
-                        <div>
-                          <p className="font-medium">{pub.title}</p>
-                          <p className="text-sm text-muted-foreground">{pub.journal}, {pub.year}</p>
-                        </div>
+                  {faculty.publications.map((pub, index) => (
+                    <div key={index} className="flex items-center p-3 border rounded-md">
+                      <Book className="h-5 w-5 mr-2 text-primary" />
+                      <div>
+                        <p className="font-medium">{pub.title}</p>
+                        <p className="text-sm text-muted-foreground">{pub.journal}, {pub.year}</p>
                       </div>
-                    ))}
-                  </div>
+                    </div>
+                  ))}
                 </div>
               </TabsContent>
 
