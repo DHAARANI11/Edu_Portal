@@ -62,6 +62,24 @@ export const FacultyDashboard = () => {
 
         <Card>
           <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">leave requests</CardTitle>
+            <CardDescription>Pending leave requests</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="text-2xl font-bold">4</div>
+          </CardContent>
+          <CardFooter>
+            <Button variant="ghost" size="sm" asChild>
+              <Link to="/faculty/leave-requests" className="flex items-center">
+                <Upload className="mr-2 h-4 w-4" />
+                <span>leave Requests</span>
+              </Link>
+            </Button>
+          </CardFooter>
+        </Card>
+
+        <Card>
+          <CardHeader className="pb-2">
             <CardTitle className="text-sm font-medium">Students</CardTitle>
             <CardDescription>Total enrolled</CardDescription>
           </CardHeader>
@@ -98,23 +116,7 @@ export const FacultyDashboard = () => {
           </CardFooter>
         </Card>
 
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-sm font-medium">Submissions</CardTitle>
-            <CardDescription>Pending review</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">23</div>
-          </CardContent>
-          <CardFooter>
-            <Button variant="ghost" size="sm" asChild>
-              <Link to="/faculty/submissions" className="flex items-center">
-                <Upload className="mr-2 h-4 w-4" />
-                <span>Review Submissions</span>
-              </Link>
-            </Button>
-          </CardFooter>
-        </Card>
+        
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
